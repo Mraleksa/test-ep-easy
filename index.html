@@ -1,0 +1,144 @@
+<html>
+
+<head>
+    <meta name=”robots” content=”noindex”>
+    <meta charset="UTF-8">
+    <title>Example Plots</title>
+    <script src="d3.v7.min.js"></script>
+    <script src="plot@0.6.1.js"></script>
+
+</head>
+
+<style>
+  #tooltip {
+  color: #222; 
+   background: rgba(0, 0, 0, 0.8);
+  padding: 5px; 
+  border-radius: 2px; 
+  opacity: 1; 
+  color:#fff;
+  position: absolute;
+  text-align:  left;
+  width:120px;
+   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+  #tooltip.trans{ opacity: 0;
+	-webkit-transition: opacity .5s;
+  -moz-transition: opacity .5s;
+  -ms-transition: opacity .5s;
+  -o-transition: opacity .5s;
+  transition: opacity .5s; 
+  pointer-events:none;
+}
+
+.tooltip {	
+  color: #222; 
+   background: rgba(0, 0, 0, 0.8);
+  padding: 5px; 
+  border-radius: 2px; 
+  opacity: 1; 
+  color:#fff;
+  position: absolute;
+  text-align:  left;
+  width:120px;
+   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;			
+}
+</style>
+
+<body>
+  текст до  
+  <div id="root"></div>
+  текст після
+  
+</body>
+
+
+<script type="module">
+const iris = await d3.json("https://cdn.jsdelivr.net/npm/vega-datasets@1.31.1/data/iris.json");
+
+let widths = screen.width;
+
+function scatter(data) {
+
+  // let bin = Plot.binX(data,{y: "count"}, {x: d => d.sepalLength,opacity:.3, thresholds: 10})
+console.log(data)
+  // console.log(data,bin)
+  const div = document.getElementById("root")
+  div.appendChild(
+    
+    Plot.plot({
+      // facet:{
+      //   data: data,
+      //   x:'species'
+      // },   
+      style:{fontSize:widths<600?22:12},
+      height:widths<600?600:300,
+      width:800,
+      height:400,
+      grid:true,  
+      x:{label:''},
+      y:{label:''},
+      marks: [
+        Plot.frame(),
+        Plot.dot(data, {
+          x: "sepalLength", y: "sepalWidth", 
+          r:4,
+          fill: "species", 
+          title: (d) =>
+        `${d.species} \n Sepal Length: ${d.sepalLength} \n Sepal Width: ${d.sepalWidth}` 
+          }
+        ),
+
+      ], 
+  })
+  
+  )
+
+
+  let divs = d3.select("#root").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+
+
+  d3.selectAll('circle').data(data).on('mouseover',function (d){
+    // console.log(d,d.target.__data__.species)
+    d3.select(this).attr('r','6');
+    // d3.select("#tooltip").append('text').text('erft')
+    // console.log(d3.pointer(d)[0])
+    // d3.select("#tooltip")
+    //   .style("left", (d3.pointer(d)[0]-50) + "px")
+    //   .style("top", (d3.pointer(d)[1]-25) + "px")
+    //   .append('text').text(d)
+    //   d3.select("#tooltip").classed("trans", false);
+    divs.transition()		
+                .duration(200)		
+                .style("opacity", .9);		
+            divs.html(d.target.__data__.species)	
+                .style("left", (d3.pointer(d)[0]-50) + "px")		
+                .style("top", (d3.pointer(d)[1]-15) + "px");	
+            		
+
+  })
+  .on('mouseout',function (){
+    d3.select(this).attr('r','4')
+    // d3.select("#tooltip").classed("trans", true);
+    divs.transition()		
+                // .duration(500)		
+                .style("opacity", 0);
+  })
+
+}
+
+scatter(iris)
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+ 
+</script>
+
+</html>
