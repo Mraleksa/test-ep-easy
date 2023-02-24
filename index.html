@@ -46,15 +46,17 @@
 </style>
 
 <body>
+  
   текст до  
-  <div id="root"></div>
+  <div style="text-anchor:center" id="root"></div>
   текст після
   
 </body>
 
+  
 
 <script type="module">
-const iris = await d3.json("https://cdn.jsdelivr.net/npm/vega-datasets@1.31.1/data/iris.json");
+const iris = d3.json("iris.json").then(function (iris) {
 
 let widths = screen.width;
 
@@ -71,7 +73,7 @@ console.log(data)
       //   data: data,
       //   x:'species'
       // },   
-      style:{fontSize:widths<600?22:12},
+      style:{fontSize:widths<600?24:12},
       height:widths<600?600:300,
       width:800,
       height:400,
@@ -131,7 +133,7 @@ console.log(data)
 
 scatter(iris)
 
-
+})
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 
